@@ -1,28 +1,16 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-
-## Loading and preprocessing the data
-```{r }
+## ----loading data----  ##
 unzip(zipfile="activity.zip")
 activity_data <- read.csv("activity.csv")
-```
 
-## What is mean total number of steps taken per day?
-```{r}
+
+## ---- What is mean total number of steps taken per day? ---- ##
 tot_steps <- tapply(activity_data$steps, activity_data$date, FUN=sum, na.rm=TRUE)
 hist(tot_steps, xlab="Total no.of steps per day",breaks=20,col="blue",
      ylab="Days",main="Histogram of number of steps per day")
 mean(tot_steps, na.rm=TRUE)
 median(tot_steps, na.rm=TRUE)
-```
 
-## What is the average daily activity pattern?
-```{r}
+## ---- What is the average daily activity pattern? ---- ##
 avg_activity <- aggregate(x=list(steps=activity_data$steps), 
                           by=list(interval=activity_data$interval),
                           FUN=mean, na.rm=TRUE)
@@ -35,10 +23,9 @@ plot(avg_activity$interval,avg_activity$steps,
 #On average across all the days in the dataset, 
 #the 5-minute interval contains the maximum number of steps?
 avg_activity[which.max(avg_activity$steps),]
-```
 
-## Imputing missing values
-```{r}
+
+## ---- Imputing missing values ---- ##
 missing_values <- is.na(activity_data$steps)
 #how many ??
 sum(missing_values==TRUE)
@@ -62,13 +49,7 @@ hist(tot_steps, xlab="Total no.of steps per day",breaks=20,col="blue",
 mean(tot_steps)
 median(tot_steps)
 
-#The mean and median values increased !
-```
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+# ---- Are there differences in activity patterns between weekdays and weekends?
 find_type_day <- function(date) {
         day <- weekdays(date)
         if (day %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
@@ -86,4 +67,3 @@ library(ggplot2)
 avgs <- aggregate(steps ~ interval + day, data=imputed_data, mean)
 ggplot(avgs, aes(interval, steps)) + geom_line() + facet_grid(day ~ .) +
         xlab("Five min interval") + ylab("No of steps")
-```
